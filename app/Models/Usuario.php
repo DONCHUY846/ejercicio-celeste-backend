@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * Class Usuario
@@ -19,7 +20,7 @@ use Illuminate\Notifications\Notifiable;
  */
 class Usuario extends Authenticatable
 {
-    use Notifiable;
+    use HasApiTokens, Notifiable;
 
     /**
      * The table associated with the model.
@@ -42,6 +43,7 @@ class Usuario extends Authenticatable
      */
     protected $fillable = [
         'id_persona',
+        'email',
         'pass',
         'admin',
     ];

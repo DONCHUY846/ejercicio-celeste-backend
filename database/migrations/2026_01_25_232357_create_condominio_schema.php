@@ -63,6 +63,7 @@ return new class extends Migration
         Schema::create('usuarios', function (Blueprint $table) {
             $table->id('id');
             $table->foreignId('id_persona')->unique()->constrained('personas', 'id')->onDelete('cascade');
+            $table->string('email')->unique();
             $table->string('pass');
             $table->boolean('admin')->default(false);
         });

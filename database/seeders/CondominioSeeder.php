@@ -103,8 +103,10 @@ class CondominioSeeder extends Seeder
         // Usuarios (Crear usuarios para las primeras 10 personas)
         $usuarios = [];
         foreach (array_slice($personas, 0, 10) as $index => $persona) {
+            $email = $index === 0 ? 'admin@test.com' : $faker->unique()->safeEmail;
             $usuarios[] = Usuario::create([
                 'id_persona' => $persona->id,
+                'email' => $email,
                 'pass' => Hash::make('password123'),
                 'admin' => $index === 0, 
             ]);
