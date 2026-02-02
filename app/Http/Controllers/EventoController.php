@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Evento;
 use App\Models\Pregunta;
+use App\Models\Usuario;
+use App\Notifications\GenericNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Exception;
 
 class EventoController extends Controller
@@ -42,6 +45,14 @@ class EventoController extends Controller
                     'pregunta' => $preguntaText,
                 ]);
             }
+
+            // Send notification to all users
+            $users = Usuario::all();
+            Notification::send($users, new GenericNotification(
+                'Nuevo Evento Disponible',
+                "Se ha creado un nuevo evento: {$evento->descripcion}",
+                "/events/{$evento->id}"
+            ));
 
             DB::commit();
 
