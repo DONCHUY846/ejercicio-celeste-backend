@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 /**
  * Class Usuario
@@ -18,7 +19,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $pass
  * @property bool $admin
  */
-class Usuario extends Authenticatable
+class Usuario extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, Notifiable;
 
@@ -46,6 +47,9 @@ class Usuario extends Authenticatable
         'email',
         'pass',
         'admin',
+        'verification_token',
+        'verification_token_expires_at',
+        'email_verified_at',
     ];
 
     /**
@@ -55,6 +59,8 @@ class Usuario extends Authenticatable
      */
     protected $hidden = [
         'pass',
+        'verification_token',
+        'remember_token',
     ];
 
     /**
@@ -64,6 +70,8 @@ class Usuario extends Authenticatable
      */
     protected $casts = [
         'admin' => 'boolean',
+        'email_verified_at' => 'datetime',
+        'verification_token_expires_at' => 'datetime',
     ];
 
     /**
