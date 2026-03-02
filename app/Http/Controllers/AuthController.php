@@ -104,7 +104,8 @@ class AuthController extends Controller
             ]);
         }
 
-        $token = $usuario->createToken('auth_token')->plainTextToken;
+        $tokenName = $request->userAgent() ?: 'unknown_device';
+        $token = $usuario->createToken($tokenName)->plainTextToken;
 
         return response()->json([
             'access_token' => $token,
@@ -122,5 +123,28 @@ class AuthController extends Controller
     public function me(Request $request)
     {
         return response()->json($request->user()->load('persona'));
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $usuario = $request->user();
+
+        if (! Hash::check($request->current_password, $usuario->pass)) {
+            throw ValidationException::withMessages([
+                'current_password' => ['La contraseña actual es incorrecta.'],
+            ]);
+        }
+
+        $usuario->pass = Hash::make($request->new_password);
+        $usuario->save();
+
+        $usuario->tokens()->delete();
+
+        return response()->json(['message' => 'Contraseña actualizada correctamente. Todas las sesiones han sido cerradas.']);
     }
 }
