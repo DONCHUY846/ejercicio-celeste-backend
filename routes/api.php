@@ -12,6 +12,9 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/email/verify/{id}/{token}', [AuthController::class, 'verifyEmail']);
 
+Route::middleware('throttle:3,1')->post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::middleware('throttle:5,1')->post('/auth/verify-otp-reset', [AuthController::class, 'verifyOtpReset']);
+
 // sanctum middleware
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);

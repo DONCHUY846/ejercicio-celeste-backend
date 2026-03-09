@@ -11,10 +11,37 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EmailVerificationMail;
+use App\Http\Requests\ForgotPasswordRequest;
+use App\Http\Requests\VerifyOtpResetRequest;
+use App\Services\OtpService;
 use Carbon\Carbon;
 
 class AuthController extends Controller
 {
+    public function forgotPassword(ForgotPasswordRequest $request, OtpService $otpService)
+    {
+        $otpService->sendOtp($request->email);
+
+        return response()->json([
+            'message' => 'Si el correo existe, se ha enviado un código de recuperación.',
+        ]);
+    }
+
+    public function verifyOtpReset(VerifyOtpResetRequest $request, OtpService $otpService)
+    {
+        $success = $otpService->verifyAndResetPassword($request->email, $request->otp);
+
+        if (!$success) {
+            return response()->json([
+                'message' => 'El código OTP es inválido o ha expirado.',
+            ], 400);
+        }
+
+        return response()->json([
+            'message' => 'Contraseña restablecida correctamente. Ahora puedes iniciar sesión con la nueva contraseña.',
+        ]);
+    }
+
     public function register(Request $request)
     {
         $request->validate([
