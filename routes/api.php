@@ -40,4 +40,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin-only', function () {
         return response()->json(['message' => 'You are an admin!']);
     })->middleware('admin');
+
+    // Ejemplo: Solo Administradores (rol id: 1)
+    Route::middleware('role:1')->group(function () {
+        Route::get('/admin-ejemplo', function () {
+            return response()->json(['message' => 'Acceso permitido solo para Administradores']);
+        });
+    });
+
+    // Ejemplo: Administradores y Residentes (rol ids: 1,2)
+    Route::middleware('role:1,2')->group(function () {
+        Route::get('/admin-o-residente-ejemplo', function () {
+            return response()->json(['message' => 'Acceso permitido para Administradores o Residentes']);
+        });
+    });
 });

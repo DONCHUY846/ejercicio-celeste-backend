@@ -36,11 +36,14 @@ class CondominioSeeder extends Seeder
 
 
         // Roles
-        $roles = ['Administrador', 'Propietario', 'Inquilino', 'Visitante', 'Seguridad'];
+        // Aseguramos que los primeros dos IDs correspondan a: 1=Administrador, 2=Residente
+        // Los demás roles se crean después para no interferir con los IDs esperados.
+        $roles = ['Administrador', 'Residente', 'Propietario', 'Inquilino', 'Visitante', 'Seguridad'];
         foreach ($roles as $rol) {
             Rol::firstOrCreate(['rol' => $rol]);
         }
         $rolAdmin = Rol::where('rol', 'Administrador')->first();
+        $rolRes = Rol::where('rol', 'Residente')->first();
         $rolProp = Rol::where('rol', 'Propietario')->first();
         $rolInq = Rol::where('rol', 'Inquilino')->first();
 
@@ -106,6 +109,7 @@ class CondominioSeeder extends Seeder
             $email = $index === 0 ? 'admin@test.com' : $faker->unique()->safeEmail;
             $usuarios[] = Usuario::create([
                 'id_persona' => $persona->id,
+                'rol_id' => $index === 0 ? $rolAdmin->id : $rolRes->id,
                 'email' => $email,
                 'pass' => Hash::make('password123'),
                 'admin' => $index === 0, 

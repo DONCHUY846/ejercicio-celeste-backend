@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -16,6 +17,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
  * 
  * @property int $id
  * @property int $id_persona
+ * @property int $rol_id
  * @property string $pass
  * @property bool $admin
  */
@@ -44,6 +46,7 @@ class Usuario extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'id_persona',
+        'rol_id',
         'email',
         'pass',
         'admin',
@@ -90,6 +93,14 @@ class Usuario extends Authenticatable implements MustVerifyEmail
     public function persona(): BelongsTo
     {
         return $this->belongsTo(Persona::class, 'id_persona');
+    }
+
+    /**
+     * Obtiene el rol asociado al usuario.
+     */
+    public function rol(): BelongsTo
+    {
+        return $this->belongsTo(Rol::class, 'rol_id');
     }
 
     /**
